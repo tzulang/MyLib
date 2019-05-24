@@ -27,20 +27,20 @@ public:
 
 	void test_fold_left() 
 	{
-		for (int i = 0; i < N; i++)
-		{
-			auto plus = std::plus<Type>{};
-			compareAccumulate<decltype(plus)>(plus, init[i]);
+        for (int i = 0; i < N; i++)
+        {
+            auto plus = std::plus<Type>{};
+            compareAccumulate<decltype(plus)>(plus, init[i]);
 
-			auto  minus = std::minus<Type>{};
-			compareAccumulate<decltype(minus)>(minus, init[i]);
+            auto  minus = std::minus<Type>{};
+            compareAccumulate<decltype(minus)>(minus, init[i]);
 
-			auto mult = std::multiplies<Type>{};
-			compareAccumulate<decltype(mult)>(mult, init[i]);
+            auto mult = std::multiplies<Type>{};
+            compareAccumulate<decltype(mult)>(mult, init[i]);
 
-			auto  div = std::divides<Type>{};
-			compareAccumulate<decltype(div)>(div, init[i]);
-		}
+            auto  div = std::divides<Type>{};
+            compareAccumulate<decltype(div)>(div, init[i]);
+        }
 	}
 
 private:
@@ -61,7 +61,7 @@ TYPED_TEST_CASE(NumericFoldLeft, MyTypes);
 
 TYPED_TEST(NumericFoldLeft, test_left_fold) 
 {
-	test_fold_left();
+    this->test_fold_left();
 }
 
 
@@ -132,7 +132,7 @@ TYPED_TEST_CASE(NumericDoubleFoldLeft, MyTypes);
 
 TYPED_TEST(NumericDoubleFoldLeft, test_left_fold) 
 {
-	test_fold_left();
+    this->test_fold_left();
 }
 
 
