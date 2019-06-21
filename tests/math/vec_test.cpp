@@ -8,14 +8,14 @@ class VecTest : public ::testing::Test {
 
 public:
 
-	static const uint64_t N = Num::value;
+    static const uint64_t N = Num::value;
 
-	void ctor_test()
-	{
-		maths::Vec<double, N> v;
+    void ctor_test()
+    {
+        maths::Vec<double, N> v;
         for (uint64_t i = 0; i < N; i++) {
-			ASSERT_EQ(v[i], 0);
-		}
+            ASSERT_EQ(v[i], 0);
+        }
 
         double value = 11;
         maths::Vec<double, N> v1(value);
@@ -23,33 +23,43 @@ public:
             ASSERT_EQ(v1[i], value);
         }
 
-		double values[N];
+        double values[N];
 
         for (uint64_t i = 0; i < N; i++) {
-			values[i] = i;
-		}
+            values[i] = i;
+        }
 
-		maths::Vec<double, N> v2(values);
+        maths::Vec<double, N> v2(values);
         for (uint64_t i = 0; i < N; i++) {
-			ASSERT_EQ(v2[i], values[i]);
-			ASSERT_EQ(v2[i], i);
-		}
+            ASSERT_EQ(v2[i], values[i]);
+            ASSERT_EQ(v2[i], i);
+        }
 
-	}
+    }
 
-	void out_of_boundaries_test()
-	{
+    void out_of_boundaries_test()
+    {
         maths::Vec<double, N> v;
         using except = typename maths::Vec<double, N>::ExceptionVectorOutofBoundIndex;
         ASSERT_THROW(v[N], except);
-	}
+    }
 
+    void plus_test()
+    {
+        maths::Vec<double, N> v;
 
+        srand(10);
+        for (uint64_t i = 0; i < N; i++)
+        {
+            ra
+        }
+
+    }
 };
 
 template <int N>
 struct Number {
-	static const int value = N;
+    static const int value = N;
 };
 
 using VecSizes = ::testing::Types<Number<1>, Number<2>, Number<3>, Number<4>, Number<10>, Number<50 >> ;
@@ -67,7 +77,7 @@ TYPED_TEST(VecTest, out_of_boundaries)
 }
 
 template<int N>
-void assert_values(maths::Vec<double, N> v)
+void assert_values(maths::Vec<double, N>  & v)
 {
     for(uint64_t i = 0; i < N ; i++)
     {
@@ -91,6 +101,18 @@ TEST(VecTestCtor, variadic_ctor)
 
     maths::Vec<double, 10> v10(0,1,2,3,4,5,6,7,8,9);
     assert_values<10>(v10);
+
+    double a = 0, b = 1, c =2;
+    double arr[3] = {0, 1, 2};
+    const double arr_c[3] = {0, 1, 2};
+
+    maths::Vec<double, 3> v3_1(a,b,c);
+    maths::Vec<double, 3> v3_2(arr);
+    maths::Vec<double, 3> v3_3(arr_c);
+
+    assert_values<3>(v3_1);
+    assert_values<3>(v3_2);
+    assert_values<3>(v3_3);
 
 }
 

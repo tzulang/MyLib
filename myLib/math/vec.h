@@ -10,7 +10,7 @@
 #include "myLib/list_utils/list_utils.h"
 #include "myLib/string_utils.h"
 #include "myLib/type_utils.h"
-
+#include "myLib/string_utils.h"
 
 namespace maths
 {
@@ -26,24 +26,51 @@ public:
         std::memset(m_value, 0, sizeof(Type) * N);
     }
 
-
     Vec(const Type *values)
     {
         std::memcpy(m_value, values, sizeof(Type) * N);
     }
 
-
-    Vec(Type const& value)
+    Vec(Type *values)
     {
-        std::fill_n(m_value, N, value);
+        std::memcpy(m_value, values, sizeof(Type) * N);
+    }
+
+    Vec(Type &&arg)
+    {
+        std::fill_n(m_value, N, arg);
+    }
+
+    Vec(Type const& arg)
+    {
+
+        std::fill_n(m_value, N, arg);
+
+    }
+
+    template<typename... Args>
+    Vec(Type &&arg ,Args&&... args)
+    {
+        static_assert (sizeof...(args) == N -1 ,"wrong number of parameters");
+        put(std::forward<Type>(arg), std::forward<Args>(args)...);
+    }
+
+    template<typename... Args>
+    Vec(Type const& arg ,Args const &... args)
+    {
+        static_assert (sizeof...(args) == N -1 , "wrong number of parameters");
+        put(arg , args...);
     }
 
 
-    template<typename... Args>
-    Vec(Type &&arg1, Type && arg2, Args&&... args)
+    Vec(const Vec<Type,N>& other)
     {
-        static_assert(sizeof...(Args) != N, "Wrong number of arguments.");
-        put(arg1, arg2, args...);
+        std::copy_n(other.m_value, N, this->m_value);
+    }
+
+    Vec(Vec<Type,N>&& other)
+    {
+        this->m_value = std::move(other.m_value);
     }
 
 
@@ -56,12 +83,6 @@ public:
         }
     };
 
-
-    void fill(Type const& value)
-    {
-        std::fill_n(m_value, N, value);
-    }
-
     Type& operator[] (uint64_t n)
     {
         if (n >= N)
@@ -72,12 +93,19 @@ public:
     Vec<Type, N>& operator+=(Vec<Type, N> const& other)
     {
         auto plus = std::plus<Type>{};
-        //auto mult = std::multiplies<Type>{};
-        utils::apply<Type[N], decltype(plus), N>(m_value, plus);
+        utils::apply<Type[N], decltype(plus), N>(m_value, other,m_value , plus);
         return *this;
     }
 
-    std::ostream & stream(std::ostream &o) const
+    Vec<Type, N> operator+(Vec<Type, N> const& other)
+    {
+        Vec<Type, N> newVal;
+        auto plus = std::plus<Type>{};
+        utils::apply<Type[N], decltype(plus), N>(m_value, other, newVal->m_value , plus);
+        return newVal;
+    }
+
+    std::ostream& stream(std::ostream &o) const
     {
             utils::stream_list<Type[N], N>(o, m_value);
             return o;
@@ -91,7 +119,7 @@ public:
     void put(Arg && arg, Args&&... args)
     {
         m_value[N - (sizeof...(Args)) - 1] = arg;
-        put(args...);
+        put(std::forward<Args>(args)...);
     }
 
     template<typename Arg>
@@ -99,8 +127,6 @@ public:
     {
             m_value[N - 1] = arg;
     }
-
-
 };
 
 
