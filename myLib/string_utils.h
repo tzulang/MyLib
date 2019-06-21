@@ -50,4 +50,11 @@ namespace utils {
 		}
 		return o;
 	}
+
+    template <typename Arg, typename... Args>
+    void print(std::ostream& out, Arg&& arg, Args&&... args)
+    {
+        out << std::forward<Arg>(arg);
+        ((out << ',' << std::forward<Args>(args)), ...);
+    }
 }
